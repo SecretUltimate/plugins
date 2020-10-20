@@ -7,7 +7,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 void main() => runApp(MaterialApp(home: WebViewExample()));
@@ -57,7 +59,7 @@ class _WebViewExampleState extends State<WebViewExample> {
       // to allow calling Scaffold.of(context) so we can show a snackbar.
       body: Builder(builder: (BuildContext context) {
         return WebView(
-          initialUrl: 'https://flutter.dev',
+          initialUrl: 'https://graph.baidu.com/pcpage/index?tpl_from=pc',
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
             _controller.complete(webViewController);
@@ -83,10 +85,17 @@ class _WebViewExampleState extends State<WebViewExample> {
             print('Page finished loading: $url');
           },
           gestureNavigationEnabled: true,
+          onShowFileChooserCallback: onShowFileChooser,
         );
       }),
       floatingActionButton: favoriteButton(),
     );
+  }
+
+  Future<String> onShowFileChooser() async {
+    PickedFile? pickedFile =
+        await ImagePicker().getImage(source: ImageSource.camera);
+    return pickedFile?.path ?? '';
   }
 
   JavascriptChannel _toasterJavascriptChannel(BuildContext context) {

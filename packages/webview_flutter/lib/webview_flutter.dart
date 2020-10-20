@@ -201,6 +201,9 @@ class JavascriptChannel {
   final JavascriptMessageHandler onMessageReceived;
 }
 
+/// CallBack for WebChromeClient onShowFileChooser
+typedef Future<String> OnShowFileChooserCallback();
+
 /// A web view widget for showing html content.
 ///
 /// There is a known issue that on iOS 13.4 and 13.5, other flutter widgets covering
@@ -231,6 +234,7 @@ class WebView extends StatefulWidget {
     this.initialMediaPlaybackPolicy =
         AutoMediaPlaybackPolicy.require_user_action_for_all_media_types,
     this.allowsInlineMediaPlayback = false,
+    this.onShowFileChooserCallback,
   })  : assert(javascriptMode != null),
         assert(initialMediaPlaybackPolicy != null),
         assert(allowsInlineMediaPlayback != null),
@@ -417,6 +421,9 @@ class WebView extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _WebViewState();
+
+  /// CallBack for WebChromeClient onShowFileChooser
+  final OnShowFileChooserCallback? onShowFileChooserCallback;
 }
 
 class _WebViewState extends State<WebView> {
@@ -609,6 +616,10 @@ class _PlatformCallbacksHandler implements WebViewPlatformCallbacksHandler {
       _javascriptChannels[channel.name] = channel;
     }
   }
+
+  @override
+  Future<String?> onShowFileChooser() async =>
+      await _widget.onShowFileChooserCallback?.call();
 }
 
 /// Controls a [WebView].
