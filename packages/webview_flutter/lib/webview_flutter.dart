@@ -194,6 +194,8 @@ class JavascriptChannel {
   /// A callback that's invoked when a message is received through the channel.
   final JavascriptMessageHandler onMessageReceived;
 }
+/// CallBack for WebChromeClient onShowFileChooser
+typedef Future<String> OnShowFileChooserCallback();
 
 /// A web view widget for showing html content.
 ///
@@ -223,6 +225,7 @@ class WebView extends StatefulWidget {
     this.userAgent,
     this.initialMediaPlaybackPolicy =
         AutoMediaPlaybackPolicy.require_user_action_for_all_media_types,
+    this.onShowFileChooserCallback,
   })  : assert(javascriptMode != null),
         assert(initialMediaPlaybackPolicy != null),
         super(key: key);
@@ -398,6 +401,9 @@ class WebView extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _WebViewState();
+
+  /// CallBack for WebChromeClient onShowFileChooser
+  final OnShowFileChooserCallback onShowFileChooserCallback;
 }
 
 class _WebViewState extends State<WebView> {
@@ -573,6 +579,9 @@ class _PlatformCallbacksHandler implements WebViewPlatformCallbacksHandler {
       _javascriptChannels[channel.name] = channel;
     }
   }
+
+  @override
+  Future<String> onShowFileChooser() async => await _widget.onShowFileChooserCallback?.call();
 }
 
 /// Controls a [WebView].

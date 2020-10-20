@@ -31,6 +31,9 @@ abstract class WebViewPlatformCallbacksHandler {
 
   /// Report web resource loading error to the host application.
   void onWebResourceError(WebResourceError error);
+
+  /// Handle WebChromeClient onShowFileChooser
+  Future<String> onShowFileChooser();
 }
 
 /// Possible error type categorizations used by [WebResourceError].
